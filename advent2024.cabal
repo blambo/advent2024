@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Day01
   other-modules:
       Paths_advent2024
   autogen-modules:
