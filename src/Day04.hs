@@ -11,7 +11,7 @@ solve = do
   let (sizeX, sizeY) = size arr
   print $ sum $ map (countAt arr) [(x,y) | x <- [1..sizeX], y <- [1..sizeY]]
 
-
+-- XMAS Mask
 -- X..X..X
 -- .X.X.X.
 -- ..XXX..
@@ -21,17 +21,17 @@ solve = do
 -- X..X..X
 
 countAt :: Array (Int, Int) Char -> (Int, Int) -> Int
-countAt arr src = foldr addTo 0 $ map (checkAtInDirection arr src) checkDirections
+countAt arr src = foldr addTo 0 $ map (checkXmasAtInDirection arr src) checkDirections
 
 addTo :: Bool -> Int -> Int
 addTo True total = total + 1
 addTo False total = total
 
-target :: [Char]
-target = ['X','M','A','S']
+targetXmas :: [Char]
+targetXmas = ['X','M','A','S']
 
-checkAtInDirection :: Array (Int, Int) Char -> (Int, Int) -> (Int, Int) -> Bool
-checkAtInDirection arr src direction = (withinBoundsInDir arr src direction) && (target == getStringInDirection arr src direction)
+checkXmasAtInDirection :: Array (Int, Int) Char -> (Int, Int) -> (Int, Int) -> Bool
+checkXmasAtInDirection arr src direction = (withinBoundsInDir arr src direction) && (targetXmas == getStringInDirection arr src direction)
 
 checkDirections :: [(Int, Int)]
 checkDirections = [(1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1), (1,1)]
