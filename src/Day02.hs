@@ -27,7 +27,7 @@ reportHasGoodGaps :: [Int] -> Bool
 reportHasGoodGaps = (all isSafeGap) . map abs . getGaps
 
 isSafeGap :: Int -> Bool
-isSafeGap a = a==1 || a==2 || a==3
+isSafeGap a = a>=1 && a<=3
 
 getGaps :: [Int] -> [Int]
 getGaps (a:b:rest) = (a - b):(getGaps (b:rest))
@@ -44,23 +44,27 @@ gapsHaveSameTrend (x:y:xs)
 gapsHaveSameTrend [_] = True
 gapsHaveSameTrend [] = True
 
-
-getReports :: String -> [[Int]]
-getReports = map (map read . words) . lines
-
+--
+-- Problem Dampener
+--
 
 runWithProblemDampener :: [Int] -> Bool
-runWithProblemDampener report = checkReportWithoutElem report $ length report
+runWithProblemDampener report = checkReportWithoutEachElem report $ length report
 
-checkReportWithoutElem :: [Int] -> Int -> Bool
-checkReportWithoutElem report idx
+checkReportWithoutEachElem :: [Int] -> Int -> Bool
+checkReportWithoutEachElem report idx
   -- If we haven't found an element to remove that makes the report pass, then report is unsafe
   | idx < 0 = False
-  | foo report idx = True
+  | checkReportWithoutIndex report idx = True
   -- Keep looking for a safe report after removing an elem
-  | otherwise = checkReportWithoutElem report (idx-1)
+  | otherwise = checkReportWithoutEachElem report (idx-1)
 
-foo :: [Int] -> Int -> Bool
-foo report x =
+checkReportWithoutIndex :: [Int] -> Int -> Bool
+checkReportWithoutIndex report x =
   let (h, t) = splitAt x report in
     reportIsSafe (h ++ (drop 1 t))
+
+
+-- Processes file contents to get each report
+getReports :: String -> [[Int]]
+getReports = map (map read . words) . lines
