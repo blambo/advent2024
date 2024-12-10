@@ -11,10 +11,10 @@ solve = do
 
 getMulInstances :: String -> [String]
 -- Run it through `head` as regex matching returns as an array of arrays
-getMulInstances contents = map head (contents =~ mulPattern)
+getMulInstances contents = filterMuls $ map head (contents =~ mulPattern)
 
 mulPattern :: String
-mulPattern = "(mul\\([0-9]{1,3},[0-9]{1,3}\\))"
+mulPattern = "(mul\\([0-9]{1,3},[0-9]{1,3}\\)|don't\\(\\)|do\\(\\))"
 
 multiply :: [Int] -> Int
 multiply [] = 0
@@ -29,3 +29,22 @@ getSecondAndThird [] = []
 getSecondAndThird [_] = []
 getSecondAndThird [_, a] = [a]
 getSecondAndThird (_:a:b:_rest) = [a,b]
+
+-- We want to remove mul operations after a don't() operation until the next do() operation
+filterMuls :: [String] -> [String]
+filterMuls = addMuls
+
+-- Remove muls until we hit a do() operation
+removeMuls :: [String] -> [String]
+removeMuls (a:rest)
+  | a == "do()" = addMuls rest
+  | otherwise = removeMuls rest
+removeMuls [] = []
+
+-- Add muls until we hit a don't() operation
+addMuls :: [String] -> [String]
+addMuls (a:rest)
+  | a == "don't()" = removeMuls rest
+  | a == "do()" = addMuls rest
+  | otherwise = (a:addMuls rest)
+addMuls [] = []
